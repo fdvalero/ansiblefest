@@ -1,0 +1,119 @@
+---
+# Variable setup.
+- name: Include user_name specific variables
+  include_vars: "{{ user_name }}.yml"
+
+- name: Create user
+  user:
+    append:             "{{ item.append|default(omit) }}"
+    comment:            "{{ item.comment|default(comment) }}"
+    createhome:         "{{ item.createhome|default(yes) }}"
+    expires:            "{{ item.expires|default(omit) }}"
+    force:              "{{ item.force|default(omit) }}"
+    generate_ssh_key:   "{{ item.generate_ssh_key|default(omit) }}"
+    group:              "{{ item.primary_group|default(primary_group) }}"
+    groups:             "{{ item.groups|default(omit) }}"
+    home:               "{{ item.home|default(home) }}"
+    move_home:          "{{ item.move_home|default(omit) }}"
+    name:               "{{ item.name|default(name) }}"
+    non_unique:         "{{ item.non_unique|default(omit) }}"
+    password:           "{{ item.password|default(omit) }}"
+    shell:              "{{ item.shell|default(shell) }}"
+    ssh_key_bits:       "{{ item.ssh_key_bits|default(omit) }}"
+    ssh_key_comment:    "{{ item.ssh_key_comment|default(omit) }}"
+    ssh_key_file:       "{{ item.ssh_key_file|default(omit) }}"
+    ssh_key_passphrase: "{{ item.ssh_key_passphrase|default(omit) }}"
+    ssh_key_type:       "{{ item.ssh_key_type|default(omit) }}"
+    state:              "{{ item.state|default(state) }}"
+    system:             "{{ item.system|default(system) }}"
+    uid:                "{{ item.uid|default(uid) }}"
+  with_items: "{{ user }}"
+  when: working_environment in item.user_environments
+        and user_class in item.user_classes
+
+- name: Set SELinux context on home dir
+  file:
+    path:    "{{ item.home|default(home) }}"
+    state:   directory
+    owner:   "{{ item.name|default(name) }}"
+    group:   "{{ item.primary_group|default(primary_group) }}"
+    seuser:  "{{ item.home_dir_seuser|default('unconfined_u') }}"
+    serole:  "{{ item.home_dir_serole|default('object_r') }}"
+    setype:  "{{ item.home_dir_setype|default('user_home_dir_t') }}"
+    selevel: "{{ item.home_dir_selevel|default('s0') }}"
+    mode:    "{{ item.home_dir_mode|default(0700) }}"
+  with_items: "{{ user }}"
+  when: working_environment in item.user_environments
+        and user_class in item.user_classes
+        and item.createhome == True
+
+- name: Create ssh dir
+  file:
+    path:    "{{ item.home|default(home) }}/.ssh"
+    state:   "{{ item.ssh_dir_state|default(ssh_dir_state) }}"
+    owner:   "{{ item.name|default(name) }}"
+    group:   "{{ item.primary_group|default(primary_group) }}"
+    seuser:  "{{ item.ssh_dir_seuser|default('unconfined_u') }}"
+    serole:  "{{ item.ssh_dir_serole|default('object_r') }}"
+    setype:  "{{ item.ssh_dir_setype|default('ssh_home_t') }}"
+    selevel: "{{ item.ssh_dir_selevel|default('s0') }}"
+    mode:    0700
+  with_items: "{{ user }}"
+  when: working_environment in item.user_environments
+        and user_class in item.user_classes
+
+# Deploy files
+- name: Deploy files
+  copy:
+    src:     "{{ item.1.src }}"
+    dest:    "{{ item.0.home|default(home) }}/{{ item.1.dest }}"
+    owner:   "{{ item.0.name|default(name) }}"
+    group:   "{{ item.1.group|default(primary_group) }}"
+    seuser:  "{{ item.1.seuser|default('unconfined_u') }}"
+    serole:  "{{ item.1.serole|default('object_r') }}"
+    setype:  "{{ item.1.setype|default('user_home_t') }}"
+    selevel: "{{ item.1.selevel|default('s0') }}"
+    mode:    "{{ item.1.mode|default('0644') }}"
+    force:   "{{ item.1.force|default('yes') }}"
+  with_subelements:
+   - "{{ user }}"
+   - files
+  when: working_environment in item.0.user_environments
+        and user_class in item.0.user_classes
+        and item.0.deploy_files == True
+
+# Deploy templates
+- name: Deploy templates
+  template:
+    src:     "{{ item.1.src }}"
+    dest:    "{{ item.0.home|default(home) }}/{{ item.1.dest }}"
+    owner:   "{{ item.0.name|default(name) }}"
+    group:   "{{ item.1.group|default(primary_group) }}"
+    seuser:  "{{ item.1.seuser|default('unconfined_u') }}"
+    serole:  "{{ item.1.serole|default('object_r') }}"
+    setype:  "{{ item.1.setype|default('user_home_t') }}"
+    selevel: "{{ item.1.selevel|default('s0') }}"
+    mode:    "{{ item.1.mode|default('0644') }}"
+    force:   "{{ item.0.force|default('yes') }}"
+  with_subelements:
+   - "{{ user }}"
+   - templates
+  when: working_environment in item.0.user_environments
+        and user_class in item.0.user_classes
+        and item.0.deploy_templates == True
+
+# sudoers is special
+# Don't need to enforce SELinux file context on this.
+# The targeted policy will get this correct.
+- name: Deploy /etc/sudoers.d/ file
+  template:
+    src:   "{{ item.sudoers_file }}"
+    dest:  /etc/sudoers.d/{{ item.name|default(name) }}
+    owner: root
+    group: root
+    mode:  0600
+  with_items: "{{ user }}"
+  when: working_environment in item.user_environments
+        and user_class in item.user_classes
+        and item.sudoers_file is defined
+

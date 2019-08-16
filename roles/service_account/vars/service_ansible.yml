@@ -1,0 +1,85 @@
+---
+# Defaults for svc_ansible
+# Set "name" in the specific sections below.
+#
+home: /var/lib/service_ansible
+comment: Service Ansible User
+system: yes
+shell: /bin/bash
+state: present
+uid: 650
+
+# Whether to create ~/.ssh
+# value can be one of 'absent' or 'directory'
+ssh_dir_state: directory
+
+# Default for the "from" option in authorized_keys.
+authorized_keys_from: "192.168.122.0/24"
+
+# The group to use for ~/.ssh and key files.
+# This should match the user's primary group.
+#
+# The primary group for the user. Note that this group should
+# already exist, having been created in the groups role.
+primary_group: service_ansible
+
+user:
+
+#### For client hosts in dev environments. ####
+  - name: service_ansible
+
+    user_environments:
+      - dev
+
+    user_classes:
+      - any
+      - all
+      - clients
+
+    # Whether to create ~/
+    createhome: yes
+
+    sudoers_file: service_ansible/dev_env/sudo_snippet.j2
+
+    # Quiet logins plus ssh/config
+    deploy_files: True
+    files:
+      - { src: service_ansible/hushlogin, dest: .hushlogin, setype: user_home_t }
+      - { src: service_ansible/ssh_config, dest: .ssh/config, setype: ssh_home_t, mode: '0600' }
+
+    authorized_keys_from: "192.168.20.0/24,192.168.0.0/24"
+
+    deploy_templates: True
+    templates:
+      - { src: service_ansible/dev_env/authorized_keys.j2, dest: .ssh/authorized_keys, setype: ssh_home_t, mode: '0600' }
+
+#### For client hosts in prd environments. ####
+  - name: service_ansible
+
+    user_environments:
+      - prd
+      - stg
+
+    user_classes:
+      - any
+      - all
+      - clients
+
+    # Whether to create ~/
+    createhome: yes
+
+    sudoers_file: service_ansible/prd_env/sudo_snippet.j2
+
+    # Quiet logins plus ssh/config
+    deploy_files: True
+    files:
+      - { src: service_ansible/hushlogin, dest: .hushlogin, setype: user_home_t }
+      - { src: service_ansible/ssh_config, dest: .ssh/config, setype: ssh_home_t, mode: '0600' }
+
+    authorized_keys_from: "192.168.20.0/24,192.168.0.0/24"
+
+    deploy_templates: True
+    templates:
+      - { src: service_ansible/prd_env/authorized_keys.j2, dest: .ssh/authorized_keys, setype: ssh_home_t, mode: '0600' }
+
+

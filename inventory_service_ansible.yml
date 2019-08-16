@@ -1,0 +1,31 @@
+dev:
+  hosts:
+    rhel8ansible1.labrhel.com:
+  vars:
+    working_environment: dev
+
+prd:
+  hosts:
+    rhel8ansible2.labrhel.com:
+  vars:
+    working_environment: prd
+
+stg:
+  hosts:
+    rhel8ansible3.labrhel.com:
+  vars:
+    working_environment: stg
+    ansible_ssh_pass: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63626134353564303830346336383436626532333930373831653239366266303934653633643634
+          3663383038373435653063316634613264386431343837370a313030373163353864306238346239
+          35643334373535386266663964373564353632373537333265373635306361386632366165393233
+          3431333664323430360a653164613962323761383538353436373438666631646635643538623664
+          6335
+
+ansiblefest:
+  children:
+    dev:
+    prd:
+    stg:
+

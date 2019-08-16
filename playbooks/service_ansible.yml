@@ -1,0 +1,12 @@
+---
+- hosts: all
+  name: manage ansible_account user on client hosts
+  become: "{{ use_sudo|default(True) }}"
+  roles:
+    - role: groups
+      group_name: service_ansible
+      group_class: all
+    - role: service_account
+      user_name: service_ansible
+      user_class: any
+...

@@ -1,0 +1,59 @@
+# AnsibleFest
+
+AnsibleFest 2019 DEMO
+
+
+# Service Ansible User ####
+Replace hosts with the updated inventory
+Add working_environment variable
+
+Install on the client libselinux-python
+
+Create the pub key and update the template
+Install on the client libselinux-python
+ssh-keygen -b 4096 -f dev_service_ansible
+ssh-keygen -b 4096 -f prd_service_ansible
+
+Make sure you execute the playbook with the right options
+roles/service_account/templates/service_ansible/dev_env/authorized_keys.j2
+roles/service_account/templates/service_ansible/prd_env/authorized_keys.j2
+
+
+echo 'password!@#' > password_file
+ansible-vault encrypt_string --vault-password-file password_file 'passwordSTG' --name 'ansible_ssh_pass'
+ansible-vault encrypt_string --vault-id root@password_file 'passwordSTG' --name 'ansible_ssh_pass'
+
+
+Test ping:
+ansible all -m ping  -i inventory_service_ansible -u root -k
+
+
+ansible-playbook -i INV playbooks/service_ansible.yml -u root -k
+
+Show Red Hat version:
+ansible -i INV all -m setup -a 'filter=ansible_distribution' -u root -k
+ansible -i INV all -m setup -a 'filter=ansible_distribution_major_version' -u root -k
+ansible -i INV all -m setup -a 'filter=ansible_distribution_version' -u root -k
+ansible -i INV all -m setup -a 'filter=ansible_distribution_release' -u root -k
+
+
+- hosts: all
+  name: manage ansible_account user on client hosts
+  become: "{{ use_sudo|default(True) }}"
+  roles:
+    - role: groups
+      group_name: service_ansible
+      group_class: all
+    - role: service_account
+      user_name: service_ansible
+      user_class: any
+...
+
+
+Inventory: inventory_service_ansible
+---
+
+ansible_python_interpreter=/usr/libexec/platform-python  # Just on RHEL8
+
+Or you need to create a symblink:
+cd /usr/bin ; ln -s /usr/libexec/platform-python python

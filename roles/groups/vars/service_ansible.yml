@@ -1,0 +1,17 @@
+---
+# This is the primary group for the service_ansible user.
+# Set "name" in the specific sections below.
+#
+system: no
+state: present
+group:
+  - name: service_ansible
+    group_environments:
+      - dev
+      - stg
+      - prd
+    group_classes:
+      - any
+      - all
+    gid: 650
+

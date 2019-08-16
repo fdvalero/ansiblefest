@@ -1,0 +1,32 @@
+
+[dev]
+#192.168.20.41	#	working_environment=dev #ansible_python_interpreter=/usr/libexec/platform-python
+rhel8ansible1.labrhel.com	working_environment=dev
+
+[prd]
+#192.168.20.42	#	working_environment=prd #ansible_python_interpreter=/usr/libexec/platform-python
+rhel8ansible2.labrhel.com	working_environment=prd
+
+[ansiblefest:children]
+dev
+prd
+
+
+
+
+
+
+
+
+
+#[ansiblefest:vars]
+#ansible_python_interpreter=/usr/libexec/platform-python
+#working_environment=dev
+
+#[test1]
+#192.168.122.120		working_environment=dev
+#192.168.122.122		working_environment=dev
+
+#[all:vars]
+#ansible_python_interpreter=/usr/libexec/platform-python
+

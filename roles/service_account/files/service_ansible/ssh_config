@@ -1,0 +1,6 @@
+# Set reasonable ssh defaults.
+Host *
+    ServerAliveInterval 30
+    EscapeChar ]
+    LogLevel Error
+

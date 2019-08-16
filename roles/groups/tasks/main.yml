@@ -1,0 +1,16 @@
+---
+# Variable setup.
+- name: Include group_name specific variables
+  include_vars: "{{ group_name }}.yml"
+
+- name: Create group
+  group:
+    gid:             "{{ item.gid|default(gid) }}"
+    name:            "{{ item.name|default(name) }}"
+    state:           "{{ item.state|default(state) }}"
+    system:          "{{ item.system|default(system) }}"
+  with_items: "{{ group }}"
+  when: working_environment in item.group_environments
+        and group_class in item.group_classes
+
+
