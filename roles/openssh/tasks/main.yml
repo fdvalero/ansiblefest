@@ -1,0 +1,35 @@
+---
+- name: Install openssh
+  yum:
+    name: "{{ item }}"
+    state: installed
+  loop:
+    - openssh
+    - openssh-clients
+    - openssh-server
+
+- name: Deploy /etc/ssh/sshd_config
+  template:
+    src: sshd_config.j2 
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0600
+    backup: yes
+  notify: Restart sshd
+
+- name: Deploy /etc/ssh/ssh_config
+  template:
+    src: ssh_config.j2
+    dest: /etc/ssh/ssh_config
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+
+- name: Ensure sshd started
+  service:
+    name: sshd
+    enabled: yes
+    state: started
+

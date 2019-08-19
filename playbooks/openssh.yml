@@ -1,0 +1,8 @@
+---
+- hosts: all
+  name: OpenSSH
+  become: "{{ use_sudo|default(True) }}"
+  roles:
+    - openssh
+
+

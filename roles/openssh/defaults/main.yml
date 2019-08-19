@@ -1,0 +1,10 @@
+---
+PermitRootLogin: "no"
+PubkeyAuthentication: "yes"
+PasswordAuthentication: "no"
+X11Forwarding: "no"
+MaxAuthTries: "4"
+ClientAliveInterval: "30"
+ClientAliveCountMax: "10"
+
+
