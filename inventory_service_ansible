@@ -1,11 +1,11 @@
 
 [dev]
-#192.168.20.41	#	working_environment=dev #ansible_python_interpreter=/usr/libexec/platform-python
-rhel8ansible1.labrhel.com	working_environment=dev
+#192.168.100.21	#	working_environment=dev #ansible_python_interpreter=/usr/libexec/platform-python
+rhel8node1.lab.example.com	working_environment=dev
 
 [prd]
-#192.168.20.42	#	working_environment=prd #ansible_python_interpreter=/usr/libexec/platform-python
-rhel8ansible2.labrhel.com	working_environment=prd
+#192.168.100.22	#	working_environment=prd #ansible_python_interpreter=/usr/libexec/platform-python
+rhel8node2.lab.example.com	working_environment=prd
 
 [ansiblefest:children]
 dev

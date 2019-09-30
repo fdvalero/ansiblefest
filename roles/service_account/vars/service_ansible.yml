@@ -47,7 +47,7 @@ user:
       - { src: service_ansible/hushlogin, dest: .hushlogin, setype: user_home_t }
       - { src: service_ansible/ssh_config, dest: .ssh/config, setype: ssh_home_t, mode: '0600' }
 
-    authorized_keys_from: "192.168.20.0/24,192.168.0.0/24"
+    authorized_keys_from: "192.168.100.0/24,192.168.0.0/24"
 
     deploy_templates: True
     templates:
@@ -76,7 +76,7 @@ user:
       - { src: service_ansible/hushlogin, dest: .hushlogin, setype: user_home_t }
       - { src: service_ansible/ssh_config, dest: .ssh/config, setype: ssh_home_t, mode: '0600' }
 
-    authorized_keys_from: "192.168.20.0/24,192.168.0.0/24"
+    authorized_keys_from: "192.168.100.0/24,192.168.0.0/24"
 
     deploy_templates: True
     templates:

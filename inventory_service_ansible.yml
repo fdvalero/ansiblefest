@@ -1,18 +1,18 @@
 dev:
   hosts:
-    rhel8ansible1.labrhel.com:
+    rhel8node1.lab.example.com:
   vars:
     working_environment: dev
 
 prd:
   hosts:
-    rhel8ansible2.labrhel.com:
+    rhel8node2.lab.example.com:
   vars:
     working_environment: prd
 
 stg:
   hosts:
-    rhel8ansible3.labrhel.com:
+    rhel8node3.lab.example.com:
   vars:
     working_environment: stg
     ansible_ssh_pass: !vault |

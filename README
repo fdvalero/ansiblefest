@@ -23,12 +23,21 @@ echo 'password!@#' > password_file
 ansible-vault encrypt_string --vault-password-file password_file 'passwordSTG' --name 'ansible_ssh_pass'
 ansible-vault encrypt_string --vault-id root@password_file 'passwordSTG' --name 'ansible_ssh_pass'
 
-
+=============
+Before start:
 Test ping:
-ansible all -m ping  -i inventory_service_ansible -u root -k
+ansible all -m ping  -i inventory_service_ansible -u fidel -k
 
 
-ansible-playbook -i INV playbooks/service_ansible.yml -u root -k
+ansible-playbook -i inventory_service_ansible playbooks/service_ansible.yml -u fidel -k -K
+
+ansible-playbook -i inventory_service_ansible.yml -l stg playbooks/service_ansible.yml -u fidel -k -K --vault-password-file password_file
+
+
+
+
+
+
 
 Show Red Hat version:
 ansible -i INV all -m setup -a 'filter=ansible_distribution' -u root -k
