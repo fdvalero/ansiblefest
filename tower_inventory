@@ -1,6 +1,0 @@
-[dbservers]
-rhel8ansible1.labrhel.com	working_environment=prd
-
-[webservers]
-rhel8ansible2.labrhel.com	working_environment=prd
-rhel8ansible3.labrhel.com	working_environment=prd
