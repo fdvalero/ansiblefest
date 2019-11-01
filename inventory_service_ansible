@@ -11,6 +11,10 @@ rhel8node2.lab.example.com	working_environment=prd
 dev
 prd
 
+[tower_inventory]
+rhel8node1.lab.example.com	working_environment=prd
+rhel8node2.lab.example.com	working_environment=prd
+rhel8node3.lab.example.com	working_environment=prd
 
 
 
