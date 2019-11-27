@@ -4,3 +4,11 @@ rhel8node1.lab.example.com	working_environment=prd
 [webservers]
 rhel8node2.lab.example.com	working_environment=prd
 rhel8node3.lab.example.com	working_environment=prd
+
+
+
+[tower_inventory]
+rhel8node1.lab.example.com	working_environment=prd
+rhel8node2.lab.example.com	working_environment=prd
+rhel8node3.lab.example.com	working_environment=prd
+

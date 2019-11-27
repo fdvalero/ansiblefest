@@ -11,17 +11,13 @@ rhel8node2.lab.example.com	working_environment=prd
 dev
 prd
 
-[tower_inventory]
-rhel8node1.lab.example.com	working_environment=prd
-rhel8node2.lab.example.com	working_environment=prd
-rhel8node3.lab.example.com	working_environment=prd
+[stg]
+rhel8node3.lab.example.com	working_environment=stg
 
-
-
-
-
-
-
+[testing:children]
+dev
+stg
+prd
 
 #[ansiblefest:vars]
 #ansible_python_interpreter=/usr/libexec/platform-python

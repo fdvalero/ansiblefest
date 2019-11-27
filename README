@@ -66,3 +66,48 @@ ansible_python_interpreter=/usr/libexec/platform-python  # Just on RHEL8
 
 Or you need to create a symblink:
 cd /usr/bin ; ln -s /usr/libexec/platform-python python
+
+
+###################################
+# First Deploy
+ansible-playbook -i inventory_service_ansible playbooks/service_ansible.yml -u fidel -k -K -l ansiblefest
+
+
+[ansiblefest:children]
+dev
+prd
+
+rhel8node1.lab.example.com
+rhel8node2.lab.example.com
+
+ssh-add dev_service_ansible
+passworddev
+
+ssh-add prd_service_ansible
+passwordprd
+
+ansible -i inventory_service_ansible ansiblefest -m ping -o -u service_ansible
+
+
+
+# Second Deploy
+ansible-playbook -i inventory_service_ansible.yml -l stg playbooks/service_ansible.yml -u fidel -k -K --vault-password-file password_file
+
+passwordSTG
+
+stg:
+  hosts:
+    rhel8node3.lab.example.com:
+  vars:
+    working_environment: stg
+
+
+ansible -i inventory_service_ansible testing -m ping -o -u service_ansible
+
+
+# Final Test
+ansible -i inventory_service_ansible all -m shell -a 'echo "hello `hostname -s`" > /tmp/123' -u service_ansible
+
+ansible -i inventory_service_ansible all -m shell -a 'cat /tmp/123' -u service_ansible
+
+
