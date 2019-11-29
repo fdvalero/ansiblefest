@@ -91,7 +91,7 @@ ansible -i inventory_service_ansible ansiblefest -m ping -o -u service_ansible
 
 
 # Second Deploy
-ansible-playbook -i inventory_service_ansible.yml -l stg playbooks/service_ansible.yml -u fidel -k -K --vault-password-file password_file
+ansible-playbook -i inventory_service_ansible.yml -l stg playbooks/service_ansible.yml -u fidel -K --vault-password-file password_file
 
 passwordSTG
 
